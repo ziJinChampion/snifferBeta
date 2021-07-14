@@ -1,0 +1,21 @@
+
+# 智嗅数据库配置
+smartsniffer:
+  database:
+    mapper-locations: classpath*:com/wit/dao/mapper/*.xml
+    type-aliases-package: com.wit.core,com.wit.dto,com.wit.query
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/smart_sniffer
+    username: postgres
+    password: 123456
+
+# thingsBoard 数据库配置
+thingsboard:
+  database:
+    mapper-locations: classpath*:com/wit/tbDao/mapper/*.xml
+    type-aliases-package: com.wit.core.thingsBoard
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/thingsboard
+    username: postgres
+    password: 123456
+

@@ -1,0 +1,6 @@
+
+# thingsBoard 连接配置
+thingsboard:
+  username: tenant@thingsboard.org
+  password: tenant
+  url: http://localhost:9000

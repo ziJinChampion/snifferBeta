@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wit.dao.TaskDAO">
+
+    <resultMap id="BaseResultMap" type="com.wit.core.taskMgr.Task">
+        <result column="task_detected_params" property="taskDetectedParams" typeHandler="com.wit.handler.ArrayTypeHandler"></result>
+    </resultMap>
+
+    <insert id="createTask" parameterType="createTaskQueryDTO">
+        INSERT INTO task(device_id, stuff_id, task_name, device_name, stuff_name, area_name, task_type,
+        expected_start_time, institute_id, institute_name, details_address, longitude, latitude,
+        task_remarks, task_state, task_detected_params)
+        VALUES(#{deviceId}, #{stuffId}, #{taskName}, #{deviceName}, #{stuffName}, #{areaName}, #{taskType},
+        #{expectedStartTime}, #{instituteId}, #{instituteName}, #{detailsAddress}, #{longitude}, #{latitude},
+        #{taskRemarks}, #{taskState}::task_state, #{taskDetectedParams, typeHandler = com.wit.handler.ArrayTypeHandler})
+    </insert>
+
+    <select id="queryTasks" parameterType="taskQueryDto" resultMap="BaseResultMap">
+        select * from task
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="stuffId != null and stuffId != 0">
+                and stuff_id = #{stuffId}
+            </if>
+
+            <if test="areaName != null and areaName != ''">
+                and area_name = #{areaName}
+            </if>
+
+            <if test="instituteName != null and instituteName != ''">
+                and institute_name = #{instituteName}
+            </if>
+
+            <if test="taskName != null and taskName != ''">
+                and task_name like CONCAT('%',#{taskName},'%' )
+            </if>
+
+            <if test="taskState != null">
+                and task_state = #{taskState}::task_state
+            </if>
+
+            <if test="startTime != null">
+                and start_time &gt;= #{startTime}
+            </if>
+
+            <if test="endTime != null">
+                and end_time &lt;= #{endTime}
+            </if>
+
+            <if test="taskDetectedParams != null and taskDetectedParams.size() != 0">
+                and task_detected_params @>
+                <foreach collection="taskDetectedParams" open="array[" separator="," close="]::character varying[]" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
+    </select>
+
+</mapper>

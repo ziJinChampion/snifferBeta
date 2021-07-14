@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wit.dao.InstituteDAO">
+
+    <select id="queryInstitutes" resultType="institute">
+        select * from institute;
+    </select>
+    
+    <select id="createInstitute" parameterType="institute" resultType="institute">
+        insert into institute(institute_name) values (#{institute}) returning *;
+    </select>
+
+    <select id="containsValue" parameterType="string" resultType="institute">
+        select * from institute
+        where institute_name = #{instituteName};
+    </select>
+
+</mapper>

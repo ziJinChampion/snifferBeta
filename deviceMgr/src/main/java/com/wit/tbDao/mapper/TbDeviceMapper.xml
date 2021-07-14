@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wit.tbDao.TbDeviceDAO">
+
+    <resultMap id="deviceCredentialMap" type="TbDeviceToken">
+        <result property="deviceId" column="device_id" typeHandler="com.wit.handler.DeviceIdHandler"/>
+        <result property="accessToken" column="credentials_id"/>
+    </resultMap>
+
+    <select id="getDeviceTokenById" parameterType="java.util.List" resultMap="deviceCredentialMap">
+        SELECT device_id, credentials_id FROM device_credentials WHERE device_id =
+        <foreach collection="deviceIds" open="ANY(ARRAY[" separator="," close="])" item="deviceId">
+            #{deviceId, typeHandler = com.wit.handler.DeviceIdHandler}
+        </foreach>
+    </select>
+
+</mapper>

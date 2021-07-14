@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wit.dao.CustomDeviceDAO">
+
+    <resultMap id="BaseResultMap" type="com.wit.core.devMgr.CustomDevice">
+        <result column="device_detect_params" property="deviceDetectedParams" typeHandler="com.wit.handler.ArrayTypeHandler"></result>
+    </resultMap>
+
+    <select id="queryDevices" resultMap="BaseResultMap" parameterType="deviceQuery">
+        select * from custom_device
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="deviceName != null">
+                and device_name = #{deviceName}
+            </if>
+            <if test="deviceState != null">
+                and device_state = #{deviceState}
+            </if>
+            <if test="deviceType != null">
+                and device_type = #{deviceType}
+            </if>
+            <if test="deviceDetectedParams != null">
+                and device_detect_params @>
+                <foreach collection="deviceDetectedParams" open="array[" separator="," close="]::character varying[]" item="item">
+                    #{item}
+                </foreach>
+            </if>
+        </trim>
+    </select>
+
+    <select id="getDeviceNames" resultType="string">
+        select device_name from custom_device;
+    </select>
+
+    <delete id="delDeviceById">
+        delete from custom_device
+        where device_id = #{deviceId};
+    </delete>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wit.dao.AreaDAO">
+
+    <resultMap id="baseResultMap" type="com.wit.core.sysMgr.Area">
+        <id column="province_id" property="value"/>
+        <result column="province_name" property="label"/>
+        <collection property="children" ofType="com.wit.core.sysMgr.Area">
+            <id column="city_id" property="value"/>
+            <result column="city_name" property="label"/>
+            <collection property="children" ofType="com.wit.core.sysMgr.Area">
+                <id column="county_id" property="value"/>
+                <result column="county_name" property="label"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="queryAreas" resultMap="baseResultMap">
+        select * from ab_county, ab_city, ab_province
+        where ab_city.city_id = ab_county.city_id and ab_city.province_id = ab_province.province_id;
+    </select>
+    
+    <select id="getVillageNamesByCountyId" resultType="string">
+        select area_name from ab_area
+        where county_id = #{countyId};
+    </select>
+
+    <insert id="createVillage">
+        INSERT INTO ab_area(area_name, county_id)
+        values (#{areaName}, #{countyId})
+        ON CONFLICT ON CONSTRAINT unique_id DO NOTHING;
+    </insert>
+
+</mapper>
